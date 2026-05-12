@@ -245,6 +245,18 @@ http --ignore-stdin -b POST :8000/api/v1/extract \
   | jq '{title, links: (.links[:5])}'
 ```
 
+#### Crawl a Medium article
+
+Medium pages are article-shaped, so `/extract` can crawl the page and return
+the cleaned content as Markdown:
+
+```bash
+http --ignore-stdin -b POST :8000/api/v1/extract \
+    url="https://medium.com/@muschneider/taming-the-terminal-streamlining-tmux-session-management-with-custom-tmux-resurrect-tweaks-8757e641cc05" \
+    wait_for_selector="article" \
+  | jq '{title, author, site_name, published_at, text_len: (.text | length), preview: .text[:500]}'
+```
+
 ### `GET /api/v1/extract`
 
 Same endpoint, query-parameter form. Quote the URL value:
