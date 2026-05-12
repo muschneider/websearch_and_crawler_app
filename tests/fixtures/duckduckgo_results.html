@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head><title>q at DuckDuckGo</title></head>
+<body>
+<div id="links" class="results">
+
+  <!-- Sponsored / ad result - parser must skip this -->
+  <div class="result result--ad results_links results_links_deep">
+    <div class="links_main links_deep result__body">
+      <h2 class="result__title">
+        <a class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fads.example%2Fpromo&rut=abc">Buy now - Sponsored</a>
+      </h2>
+      <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fads.example%2Fpromo">Sponsored snippet that should be filtered out.</a>
+    </div>
+  </div>
+
+  <!-- Organic result #1 -->
+  <div class="result results_links results_links_deep web-result">
+    <div class="links_main links_deep result__body">
+      <h2 class="result__title">
+        <a class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fpython.org%2Fdownloads&amp;rut=ignored">Python downloads page</a>
+      </h2>
+      <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fpython.org%2Fdownloads">
+        The official home of the Python Programming Language. Download the latest version.
+      </a>
+      <div class="result__extras">
+        <div class="result__extras__url">
+          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fpython.org%2Fdownloads">python.org/downloads</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Organic result #2 -->
+  <div class="result results_links results_links_deep web-result">
+    <div class="links_main links_deep result__body">
+      <h2 class="result__title">
+        <a class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2F">Python 3 docs</a>
+      </h2>
+      <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2F">
+        The Python Standard Library reference and tutorial.
+      </a>
+      <div class="result__extras">
+        <div class="result__extras__url">
+          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2F">docs.python.org/3</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Organic result #3 - direct (non-redirect) url -->
+  <div class="result results_links results_links_deep web-result">
+    <div class="links_main links_deep result__body">
+      <h2 class="result__title">
+        <a class="result__a" href="https://realpython.com/">Real Python</a>
+      </h2>
+      <a class="result__snippet" href="https://realpython.com/">
+        Learn Python online: tutorials, articles, podcasts.
+      </a>
+      <div class="result__extras">
+        <div class="result__extras__url">
+          <a class="result__url" href="https://realpython.com/">realpython.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Malformed result without an anchor - should be skipped silently -->
+  <div class="result results_links">
+    <div class="links_main">
+      <span>orphaned block</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

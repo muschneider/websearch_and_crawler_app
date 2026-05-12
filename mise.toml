@@ -1,0 +1,46 @@
+# mise manages all tool/runtime versions for this project.
+# Run `mise install` after cloning to bootstrap.
+
+[tools]
+python = "3.14.3"
+uv = "latest"
+
+[env]
+# Auto-activates .venv on cd into this directory (sets VIRTUAL_ENV + PATH).
+# `create = true` will create the venv via uv if it doesn't exist yet.
+_.python.venv = { path = ".venv", create = true }
+
+# Default app configuration (override locally via .env).
+WEBSEARCH_HOST = "0.0.0.0"
+WEBSEARCH_PORT = "8000"
+WEBSEARCH_LOG_LEVEL = "INFO"
+
+[tasks.install]
+description = "Install Python dependencies and Playwright browser binaries"
+run = """
+uv sync --extra dev
+uv run playwright install chromium
+"""
+
+[tasks.serve]
+description = "Run the FastAPI server with autoreload"
+run = "uv run uvicorn websearch_api.main:app --host $WEBSEARCH_HOST --port $WEBSEARCH_PORT --reload"
+
+[tasks.test]
+description = "Run the test suite (unit + API tests, no live network)"
+run = "uv run pytest"
+
+[tasks."test:integration"]
+description = "Run integration tests that hit real external sites (slow, network required)"
+run = "uv run pytest -m integration"
+
+[tasks.lint]
+description = "Lint and format check"
+run = """
+uv run ruff check .
+uv run ruff format --check .
+"""
+
+[tasks.format]
+description = "Auto-format code"
+run = "uv run ruff format ."

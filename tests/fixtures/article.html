@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Why Async Python Matters | Example Blog</title>
+  <meta name="description" content="A pragmatic look at when async/await actually helps and when it just adds complexity for no real gain." />
+  <meta name="author" content="Jane Developer" />
+  <meta property="og:title" content="Why Async Python Matters" />
+  <meta property="og:description" content="A pragmatic look at when async/await actually helps." />
+  <meta property="og:site_name" content="Example Blog" />
+  <meta property="og:image" content="https://blog.example.com/images/cover.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="article:published_time" content="2026-04-12T09:00:00Z" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="/articles/why-async-python-matters" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <nav>
+      <a href="/">Home</a>
+      <a href="/articles">Articles</a>
+      <a href="/about">About</a>
+    </nav>
+  </header>
+
+  <main>
+    <article id="post">
+      <h1>Why Async Python Matters</h1>
+      <p>
+        Asynchronous programming in Python has moved from a niche curiosity to a
+        first-class part of the language. With <a href="https://docs.python.org/3/library/asyncio.html">asyncio</a>
+        baked into the standard library and frameworks like
+        <a href="https://fastapi.tiangolo.com/" rel="external nofollow">FastAPI</a> embracing it,
+        teams now reach for <code>async def</code> in ordinary backend code.
+      </p>
+      <h2>When async actually helps</h2>
+      <p>
+        The single most important rule: async only buys you concurrency for
+        I/O-bound work. A web request that spends most of its time waiting on a
+        database query or an HTTP call to another service is a great candidate.
+        A CPU-bound loop that crunches numbers is not - the GIL still applies
+        and you would do better with multiprocessing.
+      </p>
+      <h2>Common pitfalls</h2>
+      <p>
+        Forgetting to <em>await</em> a coroutine creates a silently-leaked task.
+        Mixing blocking calls (think <code>requests.get</code>) inside an
+        otherwise-async handler can stall the entire event loop. Tooling like
+        <a href="https://github.com/agronholm/anyio">anyio</a> and the built-in
+        <code>asyncio.timeout()</code> help, but discipline matters more than tools.
+      </p>
+      <p>
+        For more, see our <a href="/articles/asyncio-cheatsheet">asyncio cheat sheet</a>
+        or the <a href="javascript:void(0)">interactive demo</a> below.
+      </p>
+    </article>
+  </main>
+
+  <aside class="related">
+    <h3>Related</h3>
+    <ul>
+      <li><a href="/articles/threading-vs-async">Threading vs async</a></li>
+      <li><a href="mailto:editor@example.com">Email the editor</a></li>
+    </ul>
+  </aside>
+
+  <footer>
+    <p>&copy; 2026 Example Blog</p>
+    <a href="/privacy">Privacy</a>
+    <a href="#top">Back to top</a>
+  </footer>
+
+  <script>console.log('tracking pixel');</script>
+</body>
+</html>
