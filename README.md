@@ -1,6 +1,6 @@
 # websearch-api
 
-A small, Tavily-style **web search + page-extract HTTP service** backed by
+A small **web search + page-extract HTTP service** backed by
 Playwright. It accepts a query (or an arbitrary URL), drives a real browser,
 and returns structured JSON: search results or cleaned article content with
 text + Markdown + links + metadata.
@@ -13,7 +13,7 @@ The codebase is intentionally tiny and easy to extend:
 
 - one abstract `SearchProvider` + two concrete implementations
   (`BraveSearchProvider`, `DuckDuckGoProvider`)
-- a `PageExtractor` for arbitrary-URL crawling (single-page Tavily-style
+- a `PageExtractor` for arbitrary-URL crawling (single-page
   ``/extract``), with `readability` for boilerplate removal and `markdownify`
   for HTML → Markdown
 - single long-lived Chromium instance, fresh isolated context per request
