@@ -46,6 +46,30 @@ class Settings(BaseSettings):
     default_max_results: int = Field(default=10, ge=1, le=100)
     max_results_hard_cap: int = Field(default=50, ge=1, le=200)
 
+    # --- Brave anti-bot / retry ---
+    # Total attempts (including the first) before giving up on a 429 / bot-gate.
+    brave_retry_attempts: int = Field(default=4, ge=1, le=10)
+    # Exponential backoff: delay = min(base * 2**attempt, max) + 0-30% jitter.
+    # NOTE: a real Brave 429 typically requires *tens of seconds* to clear at
+    # the edge. Aggressive (< 5s) retries usually just burn another attempt.
+    brave_retry_backoff_base_ms: int = Field(default=10_000, ge=0, le=600_000)
+    brave_retry_backoff_max_ms: int = Field(default=60_000, ge=0, le=600_000)
+    # Random pre-navigation pause so requests don't arrive on the same wall-clock
+    # tick. Drawn uniformly from [min, max]; set both to 0 to disable.
+    brave_prenav_jitter_min_ms: int = Field(default=400, ge=0, le=30_000)
+    brave_prenav_jitter_max_ms: int = Field(default=1_800, ge=0, le=30_000)
+    # When True, every search starts at the homepage and submits the query
+    # through the real search form (mimics a human). Costs ~1 extra navigation
+    # on a cold cache. Subsequent requests with the same persona reuse cookies.
+    brave_use_homepage_flow: bool = True
+    # Per-keystroke delay range (ms) when typing the query into the search box.
+    brave_keystroke_min_ms: int = Field(default=60, ge=0, le=1_000)
+    brave_keystroke_max_ms: int = Field(default=180, ge=0, le=1_000)
+    # Optional outbound proxy used only by the Brave provider. Format:
+    # "http://host:port" or "http://user:pass@host:port" or "socks5://...".
+    # The single most effective fix when your origin IP is flagged.
+    brave_proxy: str | None = None
+
     # --- API ---
     # ``NoDecode`` tells pydantic-settings not to try ``json.loads`` on this
     # field, so we can accept a plain comma-separated string from the env.
@@ -66,6 +90,38 @@ class Settings(BaseSettings):
         if value < default:
             raise ValueError(
                 f"max_results_hard_cap must be >= default_max_results (got {value} < {default})"
+            )
+        return value
+
+    @field_validator("brave_retry_backoff_max_ms")
+    @classmethod
+    def _backoff_max_gte_base(cls, value: int, info) -> int:
+        base = info.data.get("brave_retry_backoff_base_ms", 0)
+        if value < base:
+            raise ValueError(
+                f"brave_retry_backoff_max_ms must be >= brave_retry_backoff_base_ms "
+                f"(got {value} < {base})"
+            )
+        return value
+
+    @field_validator("brave_prenav_jitter_max_ms")
+    @classmethod
+    def _jitter_max_gte_min(cls, value: int, info) -> int:
+        lo = info.data.get("brave_prenav_jitter_min_ms", 0)
+        if value < lo:
+            raise ValueError(
+                f"brave_prenav_jitter_max_ms must be >= brave_prenav_jitter_min_ms "
+                f"(got {value} < {lo})"
+            )
+        return value
+
+    @field_validator("brave_keystroke_max_ms")
+    @classmethod
+    def _keystroke_max_gte_min(cls, value: int, info) -> int:
+        lo = info.data.get("brave_keystroke_min_ms", 0)
+        if value < lo:
+            raise ValueError(
+                f"brave_keystroke_max_ms must be >= brave_keystroke_min_ms (got {value} < {lo})"
             )
         return value
 
