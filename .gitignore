@@ -32,3 +32,8 @@ test-results/
 .vscode/
 .DS_Store
 *.swp
+
+#Session Files
+example.md
+langchain.md
+session*
